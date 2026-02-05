@@ -15,3 +15,11 @@ const server = Hapi.server({
         }
     }
 })
+
+//MongoDB
+mongoose
+    .connect(process.env.MONGO_URL)
+    .then(() => console.log("MongoDB connected"))
+    .catch((error) => console.error(error));
+
+
