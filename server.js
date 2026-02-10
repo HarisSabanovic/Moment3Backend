@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const dotenv = require("dotenve");
+const dotenv = require("dotenv");
 const Hapi = require("@hapi/hapi");
 
 
@@ -22,4 +22,15 @@ mongoose
     .then(() => console.log("MongoDB connected"))
     .catch((error) => console.error(error));
 
+
+//startar servern
+const init = async () => {
+    await server.start();
+    console.log(`Server running on ${server.info.url}`);
+};
+
+init().catch((error) => {
+    console.error(error);
+    process.exit(1);
+})
 
