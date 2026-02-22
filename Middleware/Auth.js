@@ -1,21 +1,39 @@
 const jwt = require("jsonwebtoken");
 
-function requireAuth(req, h) {
-    const authHeader = req.headers.authorization;
+console.log("JWT_TOKEN length at startup:", process.env.JWT_TOKEN?.length);
 
-    if(!authHeader || !authHeader.startsWith("Bearer ")) {
-        return h.response({ message: "Missing Bearer Token"}).code(401).takeover();
+
+function requireAuth(request, h) {
+  console.log("=== AUTH MIDDLEWARE START ===");
+
+  try {
+    console.log("Headers:", request.headers);
+
+    const authHeader = request.headers.authorization;
+    console.log("Authorization header:", authHeader);
+
+    if (!authHeader || !authHeader.startsWith("Bearer ")) {
+      console.log("❌ Missing Bearer token");
+      return h.response({ message: "Missing Bearer token" }).code(401).takeover();
     }
 
     const token = authHeader.slice("Bearer ".length);
+    console.log("Token received:", token.substring(0, 25) + "...");
 
-    try {
-        const decoded = jwt.verify(token, process.env.JWT_TOKEN);
-        req.auth = {credentials: decoded};
-        return h.continue;
-    } catch(error) {
-        return h.response ({message: "Invalid or expired token"}).code(401).takeover();
-    }
+    // ✅ använd JWT_SECRET (inte JWT_TOKEN)
+    const decoded = jwt.verify(token, process.env.JWT_TOKEN);
+    console.log("Decoded:", decoded);
+
+    // ✅ lägg user på request.app (säkert)
+    request.app.user = decoded;
+
+    console.log("=== AUTH OK ===");
+    console.log("JWT_TOKEN length:", process.env.JWT_TOKEN?.length);
+    return h.continue;
+  } catch (error) {
+    console.error("❌ AUTH ERROR:", error);
+    return h.response({ message: "Invalid or expired token" }).code(401).takeover();
+  }
 }
 
-module.exports = {requireAuth};
+module.exports = { requireAuth };

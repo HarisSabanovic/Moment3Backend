@@ -11,4 +11,4 @@ const blogPostSchema = new mongoose.Schema(
     { timestamps: true }
 );
 
-module.exports = mongoose.model("BlogPost", blogPostSchema);
+module.exports = mongoose.model("BlogPost", blogPostSchema, "Blogs");

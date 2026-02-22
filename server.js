@@ -1,9 +1,13 @@
 const mongoose = require("mongoose");
 const dotenv = require("dotenv");
+dotenv.config();
 const Hapi = require("@hapi/hapi");
 
 
-dotenv.config();
+const AuthRoutes = require("./Routes/AuthRoutes");
+const BlogPostRoutes = require("./Routes/BlogPostRoutes");
+
+
 
 const server = Hapi.server({
     port: process.env.PORT || 4000,
@@ -22,11 +26,15 @@ mongoose
     .then(() => console.log("MongoDB connected"))
     .catch((error) => console.error(error));
 
+// Routes
+server.route(AuthRoutes);
+server.route(BlogPostRoutes);
 
 //startar servern
 const init = async () => {
     await server.start();
-    console.log(`Server running on ${server.info.url}`);
+    console.log(`Server running on ${server.info.uri}`);
+    console.log("JWT_TOKEN exists:", !!process.env.JWT_TOKEN); // ✅ logga inte själva token/secret
 };
 
 init().catch((error) => {
