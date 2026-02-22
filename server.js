@@ -33,8 +33,6 @@ server.route(BlogPostRoutes);
 //startar servern
 const init = async () => {
     await server.start();
-    console.log(`Server running on ${server.info.uri}`);
-    console.log("JWT_TOKEN exists:", !!process.env.JWT_TOKEN); // ✅ logga inte själva token/secret
 };
 
 init().catch((error) => {
